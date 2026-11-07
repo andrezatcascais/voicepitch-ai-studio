@@ -1,0 +1,7 @@
+{
+  "name": "VoicePitch Studio - Text to MP3 Generator",
+  "description": "Generate studio-quality voice audio and download MP3 files for developer elevator pitches and job interviews powered by Gemini TTS.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
