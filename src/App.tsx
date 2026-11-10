@@ -3,26 +3,23 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, useRef } from 'react';
-import { Navbar, NavTab } from './components/Navbar';
-import { DashboardView } from './components/DashboardView';
-import { TtsGeneratorView } from './components/TtsGeneratorView';
-import { InterviewPracticeView } from './components/InterviewPracticeView';
-import { AudioLibraryView } from './components/AudioLibraryView';
-import { SettingsView } from './components/SettingsView';
-import {
-  SavedProject,
-  InterviewItem,
-  SupportedLanguage,
-} from './types';
-import { INITIAL_INTERVIEW_ITEMS } from './data/languagesAndVoices';
+import React, { useState, useEffect, useRef } from "react";
+import { Navbar, NavTab } from "./components/Navbar";
+import { DashboardView } from "./components/DashboardView";
+import { TtsGeneratorView } from "./components/TtsGeneratorView";
+import { InterviewPracticeView } from "./components/InterviewPracticeView";
+import { AudioLibraryView } from "./components/AudioLibraryView";
+import { SettingsView } from "./components/SettingsView";
+import { SavedProject, InterviewItem, SupportedLanguage } from "./types";
+import { INITIAL_INTERVIEW_ITEMS } from "./data/languagesAndVoices";
 
-const STORAGE_KEY_PROJECTS = 'voicepitch_saved_projects_v2';
-const STORAGE_KEY_SETTINGS = 'voicepitch_settings_v2';
+const STORAGE_KEY_PROJECTS = "voicepitch_saved_projects_v2";
+const STORAGE_KEY_SETTINGS = "voicepitch_settings_v2";
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<NavTab>('dashboard');
-  const [defaultLanguage, setDefaultLanguage] = useState<SupportedLanguage>('en-US');
+  const [activeTab, setActiveTab] = useState<NavTab>("dashboard");
+  const [defaultLanguage, setDefaultLanguage] =
+    useState<SupportedLanguage>("en-US");
   const [defaultPause, setDefaultPause] = useState<number>(10);
 
   // Saved projects
@@ -31,29 +28,33 @@ export default function App() {
       const stored = localStorage.getItem(STORAGE_KEY_PROJECTS);
       if (stored) return JSON.parse(stored);
     } catch (e) {
-      console.warn('Error reading stored projects:', e);
+      console.warn("Error reading stored projects:", e);
     }
     // Seed with pre-generated project
     return [
       {
-        id: 'seed-pitch-1',
-        title: 'Senior Java & Spring Boot Interview Pitch (10 Anos)',
-        type: 'tts',
+        id: "seed-pitch-1",
+        title: "Senior Java & Spring Boot Interview Pitch (10 Anos)",
+        type: "tts",
         originalText:
-          'You should hire me because I have almost 10 years of experience in software development, mainly working with Java, Spring Boot, and backend systems...',
-        language: 'en-US',
-        voice: 'Fenrir',
-        audioUrl: '/public/audio/pitch-java-developer-fenrir.mp3',
+          "You should hire me because I have almost 10 years of experience in software development, mainly working with Java, Spring Boot, and backend systems...",
+        language: "en-US",
+        voice: "Fenrir",
+        audioUrl: "/public/audio/pitch-java-developer-fenrir.mp3",
         duration: 28,
-        createdAt: 'Hoje',
-        fileSize: '438 KB',
+        createdAt: "Hoje",
+        fileSize: "438 KB",
       },
     ];
   });
 
   // Practice state transferred from Dashboard or TTS
-  const [practiceItems, setPracticeItems] = useState<InterviewItem[]>(INITIAL_INTERVIEW_ITEMS);
-  const [practiceTitle, setPracticeTitle] = useState<string>('Senior Java & Spring Boot Engineer');
+  const [practiceItems, setPracticeItems] = useState<InterviewItem[]>(
+    INITIAL_INTERVIEW_ITEMS
+  );
+  const [practiceTitle, setPracticeTitle] = useState<string>(
+    "Senior Java & Spring Boot Engineer"
+  );
 
   // Text-to-speech current text
   const [ttsText, setTtsText] = useState<string>(
@@ -67,10 +68,10 @@ I believe I can bring both technical experience and a strong willingness to cont
   // Global Audio Player
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [currentAudioUrl, setCurrentAudioUrl] = useState<string>(
-    '/public/audio/pitch-java-developer-fenrir.mp3'
+    "/public/audio/pitch-java-developer-fenrir.mp3"
   );
   const [currentWavUrl, setCurrentWavUrl] = useState<string>(
-    '/public/audio/pitch-java-developer-fenrir.wav'
+    "/public/audio/pitch-java-developer-fenrir.wav"
   );
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentTime, setCurrentTime] = useState<number>(0);
@@ -84,7 +85,7 @@ I believe I can bring both technical experience and a strong willingness to cont
     try {
       localStorage.setItem(STORAGE_KEY_PROJECTS, JSON.stringify(savedProjects));
     } catch (e) {
-      console.warn('Could not save to localStorage:', e);
+      console.warn("Could not save to localStorage:", e);
     }
   }, [savedProjects]);
 
@@ -100,16 +101,16 @@ I believe I can bring both technical experience and a strong willingness to cont
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (
-        e.code === 'Space' &&
-        document.activeElement?.tagName !== 'TEXTAREA' &&
-        document.activeElement?.tagName !== 'INPUT'
+        e.code === "Space" &&
+        document.activeElement?.tagName !== "TEXTAREA" &&
+        document.activeElement?.tagName !== "INPUT"
       ) {
         e.preventDefault();
         togglePlay();
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isPlaying]);
 
   const togglePlay = () => {
@@ -122,7 +123,7 @@ I believe I can bring both technical experience and a strong willingness to cont
         .play()
         .then(() => setIsPlaying(true))
         .catch((err) => {
-          console.error('Play error:', err);
+          console.error("Play error:", err);
           setIsPlaying(false);
         });
     }
@@ -132,7 +133,10 @@ I believe I can bring both technical experience and a strong willingness to cont
     if (!audioRef.current) return;
     audioRef.current.currentTime = 0;
     setCurrentTime(0);
-    audioRef.current.play().then(() => setIsPlaying(true)).catch(console.error);
+    audioRef.current
+      .play()
+      .then(() => setIsPlaying(true))
+      .catch(console.error);
   };
 
   const handleSeek = (seconds: number) => {
@@ -158,11 +162,13 @@ I believe I can bring both technical experience and a strong willingness to cont
   };
 
   // Add project to library
-  const handleSaveToLibrary = (proj: Omit<SavedProject, 'id' | 'createdAt'>) => {
+  const handleSaveToLibrary = (
+    proj: Omit<SavedProject, "id" | "createdAt">
+  ) => {
     const newProject: SavedProject = {
       ...proj,
       id: `proj-${Date.now()}`,
-      createdAt: 'Agora mesmo',
+      createdAt: "Agora mesmo",
     };
     setSavedProjects([newProject, ...savedProjects]);
   };
@@ -180,7 +186,10 @@ I believe I can bring both technical experience and a strong willingness to cont
     setCurrentTime(0);
     if (audioRef.current) {
       audioRef.current.src = proj.audioUrl;
-      audioRef.current.play().then(() => setIsPlaying(true)).catch(console.error);
+      audioRef.current
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch(console.error);
     }
   };
 
@@ -193,41 +202,41 @@ I believe I can bring both technical experience and a strong willingness to cont
     setPracticeItems(items);
     setPracticeTitle(title);
     setDefaultLanguage(lang);
-    setActiveTab('practice');
+    setActiveTab("practice");
   };
 
   // Transfer text from TTS editor to Interview Practice
   const handleTransferToPractice = async (text: string) => {
     try {
-      const res = await fetch('/api/parse-interview', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/parse-interview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text }),
       });
       if (res.ok) {
         const data = await res.json();
         if (data.items && data.items.length > 0) {
           setPracticeItems(data.items);
-          setPracticeTitle(data.title || 'Simulação Personalizada');
-          setActiveTab('practice');
+          setPracticeTitle(data.title || "Simulação Personalizada");
+          setActiveTab("practice");
           return;
         }
       }
     } catch (e) {
-      console.warn('Parser error:', e);
+      console.warn("Parser error:", e);
     }
     // Fallback single item
     setPracticeItems([
       {
         id: `item-${Date.now()}`,
         questionNumber: 1,
-        question: 'Why should we hire you?',
+        question: "Why should we hire you?",
         answer: text,
-        category: 'Background',
+        category: "Background",
         isSelected: true,
       },
     ]);
-    setActiveTab('practice');
+    setActiveTab("practice");
   };
 
   return (
@@ -260,7 +269,7 @@ I believe I can bring both technical experience and a strong willingness to cont
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 pt-6 sm:pt-8">
-        {activeTab === 'dashboard' && (
+        {activeTab === "dashboard" && (
           <DashboardView
             onNavigate={setActiveTab}
             onLoadTemplate={handleLoadTemplate}
@@ -269,7 +278,7 @@ I believe I can bring both technical experience and a strong willingness to cont
           />
         )}
 
-        {activeTab === 'tts' && (
+        {activeTab === "tts" && (
           <TtsGeneratorView
             initialText={ttsText}
             onNavigateToPracticeWithText={handleTransferToPractice}
@@ -293,7 +302,7 @@ I believe I can bring both technical experience and a strong willingness to cont
           />
         )}
 
-        {activeTab === 'practice' && (
+        {activeTab === "practice" && (
           <InterviewPracticeView
             initialItems={practiceItems}
             initialLanguage={defaultLanguage}
@@ -301,16 +310,16 @@ I believe I can bring both technical experience and a strong willingness to cont
           />
         )}
 
-        {activeTab === 'library' && (
+        {activeTab === "library" && (
           <AudioLibraryView
             projects={savedProjects}
             onPlayProject={handlePlaySavedProject}
             onDeleteProject={handleDeleteProject}
-            onNavigateToTts={() => setActiveTab('tts')}
+            onNavigateToTts={() => setActiveTab("tts")}
           />
         )}
 
-        {activeTab === 'settings' && (
+        {activeTab === "settings" && (
           <SettingsView
             defaultLanguage={defaultLanguage}
             onChangeLanguage={setDefaultLanguage}
@@ -328,12 +337,21 @@ I believe I can bring both technical experience and a strong willingness to cont
       <footer className="border-t border-slate-800/80 bg-slate-950 py-6 mt-12 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <span>
-            VoicePitch Studio • AI Voice Generator & Interview Practice (MP3 Edition)
+            VoicePitch Studio • AI Voice Generator (MP3 Edition) - -{" "}
+            <a
+              href="https://innoventech.dev/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-emerald-400 hover:text-emerald-300 underline underline-offset-2 transition-colors font-medium"
+            >
+              © 2026 InnovenTech
+            </a>{" "}
+            — Innovating with Heart. Building with Purpose.
           </span>
           <div className="flex items-center gap-4 text-[11px]">
             <button
               type="button"
-              onClick={() => setActiveTab('tts')}
+              onClick={() => setActiveTab("tts")}
               className="hover:text-emerald-400 transition-colors"
             >
               Text-to-Speech
@@ -341,7 +359,7 @@ I believe I can bring both technical experience and a strong willingness to cont
             <span>•</span>
             <button
               type="button"
-              onClick={() => setActiveTab('practice')}
+              onClick={() => setActiveTab("practice")}
               className="hover:text-teal-400 transition-colors"
             >
               Interview Practice (7 Modos)
@@ -349,7 +367,7 @@ I believe I can bring both technical experience and a strong willingness to cont
             <span>•</span>
             <button
               type="button"
-              onClick={() => setActiveTab('library')}
+              onClick={() => setActiveTab("library")}
               className="hover:text-amber-400 transition-colors"
             >
               Minha Biblioteca
